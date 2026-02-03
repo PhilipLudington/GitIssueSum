@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"strings"
 
@@ -15,15 +16,14 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "gitissuesum owner/repo",
+	Use:   "gitissuesum <owner/repo or GitHub URL>",
 	Short: "Summarize open GitHub issues using Claude",
 	Long:  "Fetches open issues from a GitHub repository and generates an AI-powered summary using Claude.",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
-		repo := args[0]
-		parts := strings.SplitN(repo, "/", 2)
-		if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
-			return fmt.Errorf("invalid repo format %q, expected owner/repo", repo)
+		owner, name, err := parseRepo(args[0])
+		if err != nil {
+			return err
 		}
 
 		apiKey := os.Getenv("ANTHROPIC_API_KEY")
@@ -33,13 +33,30 @@ var rootCmd = &cobra.Command{
 
 		githubToken := os.Getenv("GITHUB_TOKEN")
 
-		return summarize.Run(parts[0], parts[1], apiKey, githubToken, model, maxIssues)
+		return summarize.Run(owner, name, apiKey, githubToken, model, maxIssues)
 	},
 }
 
 func init() {
 	rootCmd.Flags().IntVar(&maxIssues, "max-issues", 200, "Maximum number of issues to fetch")
 	rootCmd.Flags().StringVar(&model, "model", "claude-sonnet-4-20250514", "Claude model to use")
+}
+
+func parseRepo(arg string) (owner, repo string, err error) {
+	if strings.Contains(arg, "://") {
+		u, parseErr := url.Parse(arg)
+		if parseErr != nil {
+			return "", "", fmt.Errorf("invalid URL %q: %w", arg, parseErr)
+		}
+		arg = strings.TrimPrefix(u.Path, "/")
+		arg = strings.TrimSuffix(arg, ".git")
+	}
+
+	parts := strings.SplitN(arg, "/", 3)
+	if len(parts) < 2 || parts[0] == "" || parts[1] == "" {
+		return "", "", fmt.Errorf("invalid repo format %q, expected owner/repo or a GitHub URL", arg)
+	}
+	return parts[0], parts[1], nil
 }
 
 func Execute() error {
