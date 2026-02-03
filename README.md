@@ -2,7 +2,7 @@
 
 A CLI tool that summarizes open GitHub issues using Claude. Built as a live demo of a Claude Code workflow.
 
-- [Slide deck](https://example.com/deck)
+- [Slide deck](I%20Built%20a%20SaaS%20with%20Claude%20Code%20—%20Here's%20My%20Workflow.html)
 - [Demo video](https://example.com/video)
 
 ## What This Is
