@@ -8,10 +8,13 @@ import (
 	"strings"
 )
 
-var linkNextRe = regexp.MustCompile(`<([^>]+)>;\s*rel="next"`)
+var (
+	linkNextRe = regexp.MustCompile(`<([^>]+)>;\s*rel="next"`)
+	baseURL    = "https://api.github.com"
+)
 
 func FetchIssues(owner, repo, token string, maxIssues int) ([]Issue, error) {
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/issues?state=open&per_page=100", owner, repo)
+	url := fmt.Sprintf("%s/repos/%s/%s/issues?state=open&per_page=100", baseURL, owner, repo)
 
 	var allIssues []Issue
 	for url != "" && len(allIssues) < maxIssues {

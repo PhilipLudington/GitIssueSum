@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-const apiURL = "https://api.anthropic.com/v1/messages"
+var apiURL = "https://api.anthropic.com/v1/messages"
 
 func SendMessage(apiKey, model, prompt string) (string, error) {
 	reqBody := Request{
