@@ -1,3 +1,4 @@
 gitissuesum
+.DS_Store
 .build-results.json
 .test-results.json
