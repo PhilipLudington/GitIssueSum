@@ -8,27 +8,27 @@ gitissuesum owner/repo
 ```
 
 ## Setup
-- [ ] Initialize Go module and add cobra dependency
-- [ ] Create `main.go` entry point
+- [x] Initialize Go module and add cobra dependency
+- [x] Create `main.go` entry point
 
 ## CLI Layer
-- [ ] `cmd/root.go` — Cobra root command with arg validation, env var reading
-- [ ] Flags: `--max-issues` (default 200), `--model` (default "claude-sonnet-4-20250514")
+- [x] `cmd/root.go` — Cobra root command with arg validation, env var reading
+- [x] Flags: `--max-issues` (default 200), `--model` (default "claude-sonnet-4-20250514")
 
 ## GitHub Client
-- [ ] `internal/github/types.go` — Issue, Label, User structs
-- [ ] `internal/github/client.go` — Paginated fetch via REST API, PR filtering, Link header parsing
+- [x] `internal/github/types.go` — Issue, Label, User structs
+- [x] `internal/github/client.go` — Paginated fetch via REST API, PR filtering, Link header parsing
 
 ## Claude Client
-- [ ] `internal/claude/types.go` — Request/response structs for Messages API
-- [ ] `internal/claude/client.go` — HTTP call to Anthropic Messages API
+- [x] `internal/claude/types.go` — Request/response structs for Messages API
+- [x] `internal/claude/client.go` — HTTP call to Anthropic Messages API
 
 ## Orchestration
-- [ ] `internal/summarize/summarize.go` — Wire fetch → build prompt → call Claude
-- [ ] Prompt: issue metadata (number, title, truncated body, labels, comments, author, date)
-- [ ] Output: high-level summary, themes/categories, patterns, top 5 issues
+- [x] `internal/summarize/summarize.go` — Wire fetch → build prompt → call Claude
+- [x] Prompt: issue metadata (number, title, truncated body, labels, comments, author, date)
+- [x] Output: high-level summary, themes/categories, patterns, top 5 issues
 
 ## Verification
-- [ ] Build succeeds: `go build -o gitissuesum .`
+- [x] Build succeeds: `go build -o gitissuesum .`
 - [ ] Manual test against a public repo
-- [ ] Error cases: missing arg, invalid format, 404, missing API key
+- [x] Error cases: missing arg, invalid format, 404, missing API key
