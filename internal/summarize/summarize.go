@@ -1,6 +1,7 @@
 package summarize
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -10,10 +11,10 @@ import (
 
 const maxBodyChars = 500
 
-func Run(owner, repo, apiKey, githubToken, model string, maxIssues int) error {
+func Run(ctx context.Context, owner, repo, apiKey, githubToken, model string, maxIssues int) error {
 	fmt.Printf("Fetching issues from %s/%s...\n", owner, repo)
 
-	issues, err := github.FetchIssues(owner, repo, githubToken, maxIssues)
+	issues, err := github.FetchIssues(ctx, owner, repo, githubToken, maxIssues)
 	if err != nil {
 		return fmt.Errorf("failed to fetch issues: %w", err)
 	}
@@ -27,7 +28,7 @@ func Run(owner, repo, apiKey, githubToken, model string, maxIssues int) error {
 
 	prompt := buildPrompt(owner, repo, issues)
 
-	response, err := claude.SendMessage(apiKey, model, prompt)
+	response, err := claude.SendMessage(ctx, apiKey, model, prompt)
 	if err != nil {
 		return fmt.Errorf("failed to get summary from Claude: %w", err)
 	}

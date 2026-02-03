@@ -1,6 +1,7 @@
 package claude
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -20,7 +21,7 @@ func TestSendMessage_Success(t *testing.T) {
 	apiURL = srv.URL
 	defer func() { apiURL = old }()
 
-	got, err := SendMessage("key", "model", "prompt")
+	got, err := SendMessage(context.Background(), "key", "model", "prompt")
 	if err != nil {
 		t.Fatalf("SendMessage() error: %v", err)
 	}
@@ -44,7 +45,7 @@ func TestSendMessage_MultiBlock(t *testing.T) {
 	apiURL = srv.URL
 	defer func() { apiURL = old }()
 
-	got, err := SendMessage("key", "model", "prompt")
+	got, err := SendMessage(context.Background(), "key", "model", "prompt")
 	if err != nil {
 		t.Fatalf("SendMessage() error: %v", err)
 	}
@@ -66,12 +67,12 @@ func TestSendMessage_APIError(t *testing.T) {
 	apiURL = srv.URL
 	defer func() { apiURL = old }()
 
-	_, err := SendMessage("key", "model", "prompt")
+	_, err := SendMessage(context.Background(), "key", "model", "prompt")
 	if err == nil {
 		t.Fatal("expected error for 400 status")
 	}
-	if got := err.Error(); got != "Anthropic API returned status 400: bad prompt" {
-		t.Errorf("error = %q, want 'Anthropic API returned status 400: bad prompt'", got)
+	if got := err.Error(); got != "Anthropic API returned status 400: invalid_request" {
+		t.Errorf("error = %q, want 'Anthropic API returned status 400: invalid_request'", got)
 	}
 }
 
@@ -86,7 +87,7 @@ func TestSendMessage_Non200NoError(t *testing.T) {
 	apiURL = srv.URL
 	defer func() { apiURL = old }()
 
-	_, err := SendMessage("key", "model", "prompt")
+	_, err := SendMessage(context.Background(), "key", "model", "prompt")
 	if err == nil {
 		t.Fatal("expected error for 500 status")
 	}
@@ -102,7 +103,7 @@ func TestSendMessage_EmptyContent(t *testing.T) {
 	apiURL = srv.URL
 	defer func() { apiURL = old }()
 
-	_, err := SendMessage("key", "model", "prompt")
+	_, err := SendMessage(context.Background(), "key", "model", "prompt")
 	if err == nil {
 		t.Fatal("expected error for empty content")
 	}
@@ -145,7 +146,7 @@ func TestSendMessage_RequestValidation(t *testing.T) {
 	apiURL = srv.URL
 	defer func() { apiURL = old }()
 
-	_, err := SendMessage("test-key", "test-model", "test-prompt")
+	_, err := SendMessage(context.Background(), "test-key", "test-model", "test-prompt")
 	if err != nil {
 		t.Fatalf("SendMessage() error: %v", err)
 	}

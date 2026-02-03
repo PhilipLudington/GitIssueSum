@@ -1,6 +1,7 @@
 package github
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -53,7 +54,7 @@ func TestFetchIssues_Basic(t *testing.T) {
 	baseURL = srv.URL
 	defer func() { baseURL = old }()
 
-	got, err := FetchIssues("o", "r", "", 100)
+	got, err := FetchIssues(context.Background(), "o", "r", "", 100)
 	if err != nil {
 		t.Fatalf("FetchIssues() error: %v", err)
 	}
@@ -81,7 +82,7 @@ func TestFetchIssues_FiltersPRs(t *testing.T) {
 	baseURL = srv.URL
 	defer func() { baseURL = old }()
 
-	got, err := FetchIssues("o", "r", "", 100)
+	got, err := FetchIssues(context.Background(), "o", "r", "", 100)
 	if err != nil {
 		t.Fatalf("FetchIssues() error: %v", err)
 	}
@@ -113,7 +114,7 @@ func TestFetchIssues_Pagination(t *testing.T) {
 	baseURL = srv.URL
 	defer func() { baseURL = old }()
 
-	got, err := FetchIssues("o", "r", "", 100)
+	got, err := FetchIssues(context.Background(), "o", "r", "", 100)
 	if err != nil {
 		t.Fatalf("FetchIssues() error: %v", err)
 	}
@@ -141,7 +142,7 @@ func TestFetchIssues_MaxIssuesLimit(t *testing.T) {
 	baseURL = srv.URL
 	defer func() { baseURL = old }()
 
-	got, err := FetchIssues("o", "r", "", 2)
+	got, err := FetchIssues(context.Background(), "o", "r", "", 2)
 	if err != nil {
 		t.Fatalf("FetchIssues() error: %v", err)
 	}
@@ -160,7 +161,7 @@ func TestFetchIssues_ErrorStatus(t *testing.T) {
 	baseURL = srv.URL
 	defer func() { baseURL = old }()
 
-	_, err := FetchIssues("o", "r", "", 100)
+	_, err := FetchIssues(context.Background(), "o", "r", "", 100)
 	if err == nil {
 		t.Fatal("expected error for 404 status")
 	}
@@ -179,7 +180,7 @@ func TestFetchIssues_AuthHeader(t *testing.T) {
 	baseURL = srv.URL
 	defer func() { baseURL = old }()
 
-	_, err := FetchIssues("o", "r", "test-token", 100)
+	_, err := FetchIssues(context.Background(), "o", "r", "test-token", 100)
 	if err != nil {
 		t.Fatalf("FetchIssues() error: %v", err)
 	}

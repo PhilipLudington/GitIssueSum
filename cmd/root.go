@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/mrphil/gitissuesum/internal/summarize"
 	"github.com/spf13/cobra"
 )
+
+var validRepoName = regexp.MustCompile(`^[a-zA-Z0-9._-]+$`)
 
 var (
 	maxIssues int
@@ -33,7 +36,7 @@ var rootCmd = &cobra.Command{
 
 		githubToken := os.Getenv("GITHUB_TOKEN")
 
-		return summarize.Run(owner, name, apiKey, githubToken, model, maxIssues)
+		return summarize.Run(cmd.Context(), owner, name, apiKey, githubToken, model, maxIssues)
 	},
 }
 
@@ -55,6 +58,9 @@ func parseRepo(arg string) (owner, repo string, err error) {
 	parts := strings.SplitN(arg, "/", 3)
 	if len(parts) < 2 || parts[0] == "" || parts[1] == "" {
 		return "", "", fmt.Errorf("invalid repo format %q, expected owner/repo or a GitHub URL", arg)
+	}
+	if !validRepoName.MatchString(parts[0]) || !validRepoName.MatchString(parts[1]) {
+		return "", "", fmt.Errorf("invalid owner or repo name in %q", arg)
 	}
 	return parts[0], parts[1], nil
 }
